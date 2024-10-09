@@ -5,31 +5,13 @@ using System.Text;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.Events;
-using Random = UnityEngine.Random; // 需要导入 Newtonsoft.Json 库
+using Random = UnityEngine.Random;
 
-// 自定义的数据结构
-[Serializable]
-public class SendData
-{
-    public string command;
-    public int value;
-    public Vector3 position; // 包含 Unity 的 Vector3 类型
-}
 
-// 服务器响应类
-[Serializable]
-public class ServerResponse
-{
-    public string message;
-    public string status;
-    public Vector3 position;
-}
-
-//ServerResponse event 
-public class ServerResponseEvent : UnityEvent<ServerResponse>
-{
-}
-
+/// <summary>
+/// 尝试通过Python服务器控制Unity中的Cube移动，
+/// ！！首先需要确保Python服务器已经启动！！
+/// </summary>
 public class MyTcpClient : MonoBehaviour
 {
     public int port = 65432;
@@ -43,6 +25,7 @@ public class MyTcpClient : MonoBehaviour
     private void Start()
     {
         ConnectToServer();
+        // 监听服务器响应，并重新发送新的位置，实现一个简单的位置同步死循环
         _serverResponseEvent.AddListener((response) =>
         {
             // 更新位置
@@ -50,16 +33,18 @@ public class MyTcpClient : MonoBehaviour
             // 向服务器发送新的位置
             StartCoroutine(DelaySendCubePosition());
         });
+
+        StartCoroutine(DelaySendCubePosition(1));//游戏启动1秒后发送位置并触发服务器响应死循环，直到强制退出
     }
 
-    private void Update()
-    {
-        // 按下空格时发送 Vector3 数据
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(DelaySendCubePosition(0));
-        }
-    }
+    // private void Update()
+    // {
+    //     // 按下空格时发送 Vector3 数据
+    //     if (Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         StartCoroutine(DelaySendCubePosition(0));
+    //     }
+    // }
 
     private IEnumerator DelaySendCubePosition(float delay = .1f)
     {
@@ -127,7 +112,7 @@ public class MyTcpClient : MonoBehaviour
                 string jsonData = JsonConvert.SerializeObject(dataToSend);
                 byte[] data = Encoding.ASCII.GetBytes(jsonData);
                 _stream.Write(data, 0, data.Length);
-                Debug.Log("<color=blue>Sent to server:</color> " + jsonData);
+                Debug.Log("<color=orange>Sent to server:</color> " + jsonData);
             }
         }
         catch (Exception e)
@@ -157,7 +142,7 @@ public class MyTcpClient : MonoBehaviour
                 if (bytesRead > 0)
                 {
                     string jsonResponse = Encoding.ASCII.GetString(data, 0, bytesRead);
-                    Debug.Log("Received from server: " + jsonResponse);
+                    //Debug.Log("Received from server: " + jsonResponse);
 
                     // 使用 JsonConvert 反序列化为 ServerResponse 对象
                     ServerResponse serverResponse = JsonConvert.DeserializeObject<ServerResponse>(jsonResponse);
@@ -177,4 +162,27 @@ public class MyTcpClient : MonoBehaviour
     {
         _socketConnection?.Close();
     }
+    #region CustomClasses
+    [Serializable]
+    public class SendData
+    {
+        public string command;
+        public int value;
+        public Vector3 position; // 包含 Unity 的 Vector3 类型
+    }
+
+    // 服务器响应类
+    [Serializable]
+    public class ServerResponse
+    {
+        public string message;
+        public string status;
+        public Vector3 position;
+    }
+
+    //ServerResponse event 
+    public class ServerResponseEvent : UnityEvent<ServerResponse>
+    {
+    }
+    #endregion
 }

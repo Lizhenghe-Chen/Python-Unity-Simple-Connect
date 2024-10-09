@@ -22,14 +22,18 @@ def ProcessRawData(data):
 
 
 def SendResponse(response_data):
+    '''
+    发送响应消息
+    '''
     # 构建返回消息
     # add random number to x
     x = recieved_Position["x"] + random.randint(-1, 1)
     y = recieved_Position["y"]
     z = recieved_Position["z"] + random.randint(-1, 1)
+    proceeded_data = dataProcess()
     response_data = {
         "message": "Vector3 received",
-        "position": {"x": x, "y": y, "z": z},
+        "position": {"x": proceeded_data[0], "y": proceeded_data[1], "z": proceeded_data[2]},
         "status": "ok",
     }
     # 序列化为 JSON 字符串并发送回客户端
@@ -40,12 +44,22 @@ def SendResponse(response_data):
         f"send back to Unity: x={round(x, 2)}, y={round(y, 2)}, z={round(z, 2)}"
     )
 
+def dataProcess():
+    '''
+    数据处理部分，可以替换为自己的处理逻辑，比如加减乘除等或者调用其他函数，举一反三
+    '''
+    x = recieved_Position["x"] + random.randint(-1, 1)
+    y = recieved_Position["y"]
+    z = recieved_Position["z"] + random.randint(-1, 1)
+    return x, y, z
 
-# 创建 TCP 服务器
+'''
+创建 TCP 服务器，务必现启动该服务器再启动 Unity！！
+'''
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
-    print(f"Server started. Listening on {HOST}:{PORT}")
+    print(f"Server started. Waiting For Unity Start. Listening on {HOST}:{PORT}")
 
     conn, addr = s.accept()
     with conn:
