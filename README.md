@@ -17,3 +17,8 @@ Unity和Python或多或少都有需要互相连接的场合，比如需要Python
 
 整个项目其实就只需要两个脚本，一个[Python脚本](Assets/Scripts/TCPServer.py)作为服务器，一个[C#脚本](Assets/Scripts/MyTcpClient.cs)作为客户端。
 运行Python脚本后，再启动Unity，Unity会自动自动开始发送信息。Python 服务器接收到信息后会处理并重新发送信息给Unity，Unity收到后在发送新的信息，从而进入一个死循环，Unity中的方块将会持续的被Python控制。该项目将会实现Python和Unity的持续通讯。
+
+结果如图：
+
+
+![1728551675717](image/README/1728551675717.gif)
