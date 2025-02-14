@@ -11,7 +11,7 @@ Unity和Python或多或少都有需要互相连接的场合，比如需要Python
 3. 通过[itisnajim/SocketIOUnity: A Wrapper for socket.io-client-csharp to work with Unity.](https://github.com/itisnajim/SocketIOUnity?tab=readme-ov-file)，对于Python端来说更加友好，对Unity也没有太多门槛，也很方便
 4. 通过网络端口实现（TCP/UDP）两端的通讯，这样两者之间相互独立，灵活度高。
 
-这里采用第三种方法，现通过非常简单的方式实现比较高效灵活的Python+Unity对接。
+这里采用第四种方法，现通过非常简单的方式实现比较高效灵活的Python+Unity对接。
 **这里将实现一个简单的TCP通讯: Python作为服务器，Unity作为客户端，Unity向Python发送方块的实时位置，Python接收并更新方块的位置给Unity。**
 
 ## 实现
