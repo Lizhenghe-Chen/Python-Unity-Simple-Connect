@@ -8,7 +8,8 @@ Unity和Python或多或少都有需要互相连接的场合，比如需要Python
 
 1. 通过内存共享实现（应该是通过特定的DLL来打通）、技术要求高一些，自己也没具体了解过。
 2. 通过[NuGet Gallery | pythonnet 3.0.4](https://www.nuget.org/packages/pythonnet)实现C#内部运行Python代码，案例有：[shiena/Unity-PythonNet (github.com)](https://github.com/shiena/Unity-PythonNet)，但是看起来案例和灵活度（如平台兼容性）较低。
-3. 通过网络端口实现（TCP/UDP）两端的通讯，这样两者之间相互独立，灵活度高。
+3. 通过[itisnajim/SocketIOUnity: A Wrapper for socket.io-client-csharp to work with Unity.](https://github.com/itisnajim/SocketIOUnity?tab=readme-ov-file)，对于Python端来说更加友好，对Unity也没有太多门槛，也很方便
+4. 通过网络端口实现（TCP/UDP）两端的通讯，这样两者之间相互独立，灵活度高。
 
 这里采用第三种方法，现通过非常简单的方式实现比较高效灵活的Python+Unity对接。
 **这里将实现一个简单的TCP通讯: Python作为服务器，Unity作为客户端，Unity向Python发送方块的实时位置，Python接收并更新方块的位置给Unity。**
